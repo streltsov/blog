@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>Herman Streltsov Blog</title>
+        <link>https://blog.streltsov.dev/blog/</link>
+        <description>Herman Streltsov Blog</description>
+        <lastBuildDate>Thu, 09 Dec 2021 15:22:02 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Разница между isNaN и Number.isNaN]]></title>
+            <link>https://blog.streltsov.dev/blog/isNaN-vs-Number.isNaN</link>
+            <guid>isNaN-vs-Number.isNaN</guid>
+            <pubDate>Thu, 09 Dec 2021 15:22:02 GMT</pubDate>
+            <description><![CDATA[ADD DESCRIPTION]]></description>
+            <content:encoded><![CDATA[<p><strong>TL;DR:</strong> Отличие <strong>isNaN</strong> от <strong>Number.isNaN</strong> в том, что перед тем как
+проверить значение на <code>NaN</code>, функция <strong>isNaN</strong> , неявно приводит переданный
+аргумент к типу <code>number</code>, а метод <strong>Number.isNaN</strong> проверяет является ли
+переданный аргумент типом <code>number</code></p><h2>isNaN</h2><p>Наверняка найдется случай где функция <strong>isNaN</strong> придется кстати и будет полезна, но сразу в
+голову такой не придет.</p><p>И она вроде бы работает, если в нее передать <code>NaN</code>, строку или объект, она вернет <code>true</code>:</p><pre><code class="language-js">isNaN(NaN);          // -&gt; true
+isNaN(undefined);    // -&gt; true
+isNaN(&quot;JavaScript&quot;); // -&gt; true
+isNaN({a: 1});       // -&gt; true
+isNaN([]);           // -&gt; true
+</code></pre><p>А если передать число, она закономерно возвращает <code>false</code>:</p><pre><code class="language-js">isNaN(42); // -&gt; false
+isNaN(0);  // -&gt; false
+</code></pre><p>Но, не все так просто.</p><p><strong>isNaN</strong> по настоящему джаваскриптовая функция, у нее есть принципы и она следует
+<em>JavaScript Way</em>.</p><p>Поэтому, первым делом она <em>неявно</em> приводит переданное в нее значение к типу
+<code>number</code>, и теперь булевы значения, пустые строки, строки с пробелами и
+некоторые массивы для нее тоже <code>number</code>:</p><pre><code class="language-js">isNaN([&quot;1&quot;]); // -&gt; false
+isNaN(true);  // -&gt; false
+isNaN(&#x27;  &#x27;);  // -&gt; false
+isNaN(&#x27;&#x27;);    // -&gt; false
+</code></pre><p>Да, потому что если переданные выше значения привести к типу <code>number</code>, они в
+самом деле станут числами. Первые два единицами, а вторые два нулями.</p><p>Более того, если в <strong>isNaN</strong> передать тип <code>symbol</code> или <code>bigint</code>, то она выкинет ошибку:</p><p><img src="/img/isNaN-vs-Number-isNaN/type-error.jpg" alt="TypeError при передаче в функцию isNaN типов symbol и bigint"/></p><p>Во всех остальных случаях <strong>isNaN</strong> вернет <code>false</code>.</p><p>Так как <code>NaN</code> не равен самому себе, то до ES2015, надежным способом проверки на
+<code>NaN</code> было сравнить значение с самим собой:</p><pre><code class="language-js">const value = NaN;
+value == value; // -&gt; false
+</code></pre><p>Для того чтобы не напрягать попусту мозги всевозможными исходами вызова функции
+<strong>isNaN</strong>, можно воспользоваться понятным и надежным методом <strong>Number.isNaN</strong>,
+который появился в ES2015.</p><h2>Number.isNaN</h2><p>C <strong>Number.isNaN</strong> все намного проще.</p><p>Про этот метод, в отличие от <strong>isNaN</strong>, действительно можно сказать, что она
+определяет было ли передано в нее значение <code>NaN</code> или нет. Она ожидаемо
+возвращает <code>true</code> если в нее передать <code>NaN</code> и <code>false</code> во всех остальных
+случаях:</p><pre><code class="language-js">Number.isNaN(NaN);          // -&gt; true
+
+Number.isNaN(42);           // -&gt; false
+Number.isNaN(BigInt(42));   // -&gt; false
+Number.isNaN(&quot;JavaScript&quot;); // -&gt; false
+Number.isNaN([1, 2, 3]);    // -&gt; false
+Number.isNaN(undefined);    // -&gt; false
+Number.isNaN(null);         // -&gt; false
+Number.isNaN(Symbol());     // -&gt; false
+</code></pre><p>Под капотом <strong>Number.isNaN</strong> сначала проверяет является ли аргумент числом, и
+если нет, возвращает <code>false</code>, а если является, то проверяет является ли оно
+<code>NaN</code> и соответственно возвращает <code>true</code> или <code>false</code>.</p><p>Поначалу, пока я не разобрался и не копнул поглубже, мне показалось, что метод
+<strong>Number.isNaN</strong> проверяет именно на значение <code>NaN</code>, а функция <strong>isNaN</strong>
+проверяет на то, чтобы значение не являлось числом, не типом <code>number</code>, а именно
+числом, но я ошибался.</p><h2>Проверь себя</h2><pre><code class="language-js">const name = &#x27;Lydia Hallie&#x27;;
+const age = 21;
+
+console.log(Number.isNaN(name));
+console.log(Number.isNaN(age));
+
+console.log(isNaN(name));
+console.log(isNaN(age));
+</code></pre><details><summary>Ответ</summary><p><code>false</code>, <code>false</code>, <code>true</code>, <code>false</code></p></details>]]></content:encoded>
+        </item>
+    </channel>
+</rss>
