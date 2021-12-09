@@ -6,6 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 module.exports = {
   title: 'Herman Streltsov',
+  trailingSlash: true,
   url: 'https://blog.streltsov.dev',
   baseUrl: '/blog/',
   onBrokenLinks: 'throw',
