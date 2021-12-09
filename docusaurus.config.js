@@ -15,6 +15,21 @@ module.exports = {
   organizationName: 'streltsov',
   projectName: 'blog',
 
+   i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'ru'],
+    localeConfigs: {
+      en: {
+        label: 'English',
+        direction: 'ltr',
+      },
+      ru: {
+        label: 'Русский',
+        direction: 'ltr',
+      },
+    },
+  },
+
   presets: [
     [
       '@docusaurus/preset-classic',
