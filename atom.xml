@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://blog.streltsov.dev/blog/</id>
+    <id>https://blog.streltsov.dev/</id>
     <title>Herman Streltsov Blog</title>
     <updated>2021-12-09T15:22:02.735Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://blog.streltsov.dev/blog/"/>
+    <link rel="alternate" href="https://blog.streltsov.dev/"/>
     <subtitle>Herman Streltsov Blog</subtitle>
-    <icon>https://blog.streltsov.dev/blog/img/favicon.ico</icon>
+    <icon>https://blog.streltsov.dev/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[Разница между isNaN и Number.isNaN]]></title>
         <id>isNaN-vs-Number.isNaN</id>
-        <link href="https://blog.streltsov.dev/blog/isNaN-vs-Number.isNaN"/>
+        <link href="https://blog.streltsov.dev/isNaN-vs-Number.isNaN"/>
         <updated>2021-12-09T15:22:02.735Z</updated>
         <summary type="html"><![CDATA[ADD DESCRIPTION]]></summary>
         <content type="html"><![CDATA[<p><strong>TL;DR:</strong> Отличие <strong>isNaN</strong> от <strong>Number.isNaN</strong> в том, что перед тем как

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwiki_blog=self.webpackChunkwiki_blog||[]).push([[535],{5641:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"\u0420\u0430\u0437\u043d\u0438\u0446\u0430 \u043c\u0435\u0436\u0434\u0443 isNaN \u0438 Number.isNaN","permalink":"/isNaN-vs-Number.isNaN"}]}')}}]);

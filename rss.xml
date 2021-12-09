@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>Herman Streltsov Blog</title>
-        <link>https://blog.streltsov.dev/blog/</link>
+        <link>https://blog.streltsov.dev/</link>
         <description>Herman Streltsov Blog</description>
         <lastBuildDate>Thu, 09 Dec 2021 15:22:02 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
             <title><![CDATA[Разница между isNaN и Number.isNaN]]></title>
-            <link>https://blog.streltsov.dev/blog/isNaN-vs-Number.isNaN</link>
+            <link>https://blog.streltsov.dev/isNaN-vs-Number.isNaN</link>
             <guid>isNaN-vs-Number.isNaN</guid>
             <pubDate>Thu, 09 Dec 2021 15:22:02 GMT</pubDate>
             <description><![CDATA[ADD DESCRIPTION]]></description>
