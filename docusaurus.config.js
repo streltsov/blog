@@ -15,6 +15,10 @@ module.exports = {
   organizationName: 'streltsov',
   projectName: 'blog',
   presets: [
+  i18n: {
+   defaultLocale: 'ru',
+    locales: ['ru'],
+   },
     [
       '@docusaurus/preset-classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
