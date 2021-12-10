@@ -15,12 +15,12 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'streltsov',
   projectName: 'blog',
-  presets: [
   baseUrlIssueBanner: true,
   i18n: {
-   defaultLocale: 'ru',
+    defaultLocale: 'ru',
     locales: ['ru'],
-   },
+  },
+  presets: [
     [
       '@docusaurus/preset-classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
@@ -31,9 +31,7 @@ module.exports = {
 	  routeBasePath: '/',
 	  showReadingTime: true,
 	  postsPerPage: 'ALL',
-	  // Please change this to your repo.
-	  editUrl:
-	  'https://github.com/streltsov/blog/edit/main/website/blog/',
+	  editUrl: 'https://github.com/streltsov/blog',
 	},
 	theme: {
 	  customCss: require.resolve('./src/css/custom.css'),
