@@ -53,7 +53,10 @@ module.exports = {
   ],
   themeConfig:
   /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-  ({
+  {
+    colorMode: {
+      defaultMode: 'dark',
+    },
     navbar: {
       title: 'Herman Streltsov',
     },
@@ -61,5 +64,5 @@ module.exports = {
       theme: lightCodeTheme,
       darkTheme: darkCodeTheme,
     },
-  })
+  },
 };
