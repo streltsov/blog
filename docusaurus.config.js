@@ -16,6 +16,7 @@ module.exports = {
   organizationName: 'streltsov',
   projectName: 'blog',
   presets: [
+  baseUrlIssueBanner: true,
   i18n: {
    defaultLocale: 'ru',
     locales: ['ru'],
