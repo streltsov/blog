@@ -1,116 +1,115 @@
 ---
-title: Разница между isNaN и Number.isNaN
-
-description: ADD DESCRIPTION
-
+title: The difference between isNaN and Number.isNaN
+description: How to check for NaN value and what is the difference between isNaN and Number.isNaN
 slug: isNaN-vs-Number.isNaN
 tags: [JavaScript, wtfjs]
 hide_table_of_contents: false
 ---
 
-<!--
-     TODO:
-     2. Find out why bigint and symbol throws an error on converting it to number
-     3. Find out why NaN is of type number
-    
-     Links: https://dev.to/mang0088/isnan-vs-numberisnan-5e01
+JavaScript method **Number.isNaN** and its evil twin brother global function
+**isNaN** may confuse you and make you think if they has the same name – then
+they behave the same way.
 
-## Что такое NaN
+But they do not.
 
-**NaN (Not-A-Number)**
+In this article I'll try to explain in detail the difference between the twins
+and how to reliably check for `NaN` value.
 
-**NaN** может появится в коде в случаях когда:
- - Число невозможно распарсить, например `parseInt("Helluva")` или `Number(undefined)`
- - Один из операндов равняется **NaN**, например `12 + NaN` или `42 * NaN`
- - Результат метематической операции не является числомa, например `Math.sqrt(-1)`
- - `0 * Infinity` или `undefined + undefined`
- - Операции со строкой кроме сложения, например `"helluva" / 2` 
+But first, let's recall what the hell `NaN` value is.
 
-Origin of NaN values:
+## NaN
 
-NaN values are generated when arithmetic operations result in undefined or unrepresentable values. Such values do not necessarily represent overflow conditions. A NaN also results from attempted coercion to numeric values of non-numeric values for which no primitive numeric value is available.
--->
+**NaN** — is a two-faced value, which stands for *Not-a-Number*, but
+paradoxically has a type of `number`.
 
+You can get a `NaN` if you try to do some crazy operation like multiplying
+infinity by zero:
 
-**TL;DR:** Отличие **isNaN** от **Number.isNaN** в том, что перед тем как
-проверить значение на `NaN`, функция **isNaN** , неявно приводит переданный
-аргумент к типу `number`, а метод **Number.isNaN** проверяет является ли
-переданный аргумент типом `number`
+```js
+Infinity * 0 // -> NaN
+```
+and other useless operatons:
 
-## isNaN
-Наверняка найдется случай где функция **isNaN** придется кстати и будет полезна, но сразу в
-голову такой не придет.
+```js
+0 / 0                 // -> NaN
+0 * Infinity          // -> NaN
+"JavaScript" - 777    // -> NaN
+undefined + undefined // -> NaN
+```
 
-И она вроде бы работает, если в нее передать `NaN`, строку или объект, она вернет `true`:
+But also you can get a `NaN` in some practical case, for example when parsing a
+string with `parseInt`:
+
+```js
+parseInt("string"); // -> NaN
+```
+
+Here, we would like to know if the operation failed or not. How do we do that?
+Well, if it's failed then the result should be `NaN`, so we check for `NaN`
+
+```js
+const maybeNaN = parseInt("some string");
+
+if (maybeNaN == NaN) {
+  // Code if parsing failed
+} else {
+  // Code if parsing succeeded
+}
+```
+But, thats not gonna work as comparison `maybeNaN == NaN` always will be false
+because in JavaScript nothing is equal to `NaN`, even `NaN` itself.
+
+So, how do we check for `NaN`? Let's try this global function `isNaN`.
+
+## Global Function isNaN
+
+Considering the function's name we can assume that the function checks for
+`NaN` value. So, if we pass the `NaN` value it will return true and if it's
+something else we will get `false`. Let's check it out if it's true:
 
 ```js
 isNaN(NaN);          // -> true
-isNaN(undefined);    // -> true
-isNaN("JavaScript"); // -> true
-isNaN({a: 1});       // -> true
-isNaN([]);           // -> true
 ```
 
-А если передать число, она закономерно возвращает `false`:
+Works like a charm with `NaN`! Let's try different values:
 
 ```js
 isNaN(42); // -> false
 isNaN(0);  // -> false
 ```
 
-Но, не все так просто.
+Seems to be working too!
 
-**isNaN** по настоящему джаваскриптовая функция, у нее есть принципы и она следует
-*JavaScript Way*.
-
-Поэтому, первым делом она *неявно* приводит переданное в нее значение к типу
-`number`, и теперь булевы значения, пустые строки, строки с пробелами и
-некоторые массивы для нее тоже `number`:
+But all JS quirks begins when we pass to the function some value with type
+other than `number`. Let's see:
 
 ```js
-isNaN(["1"]); // -> false
-isNaN(true);  // -> false
-isNaN('  ');  // -> false
-isNaN('');    // -> false
+isNaN(undefined);    // -> true
+isNaN("JavaScript"); // -> true
+isNaN({a: 1});       // -> true
+isNaN([]);           // -> true
 ```
 
-Да, потому что если переданные выше значения привести к типу `number`, они в
-самом деле станут числами. Первые два единицами, а вторые два нулями.
+So, what the heck is going on here?
 
-Более того, если в **isNaN** передать тип `symbol` или `bigint`, то она выкинет ошибку:
+According to [specification](https://tc39.es/ecma262/#sec-isnan-number) the
+first thing that function `isNaN` does, is implicitly converts passed argument
+to type `number`. And only after converting checks if it is a `NaN`
+
+You can see it if you'll pass to `isNaN` a value with type `symbol` or
+`bigint`. JavaScript wont be able to convert these types to `number`:
 
 ![TypeError при передаче в функцию isNaN типов symbol и bigint](/img/isNaN-vs-Number-isNaN/type-error.jpg)
 
-Во всех остальных случаях **isNaN** вернет `false`.
+To sum up, if you want to check for `NaN` value with `isNaN` function, you
+should feed it only with values of type `number`. Or you can use a much more
+reliable method `Number.isNaN`.
 
-<!--
-```js
-isNaN(["1"]); // -> false
-isNaN(true);  // -> false
-isNaN('  ');  // -> false
-isNaN('');    // -> false
-```
--->
-Так как `NaN` не равен самому себе, то до ES2015, надежным способом проверки на
-`NaN` было сравнить значение с самим собой:
+## Number.isNaN method
 
-```js
-const value = NaN;
-value == value; // -> false
-```
-
-Для того чтобы не напрягать попусту мозги всевозможными исходами вызова функции
-**isNaN**, можно воспользоваться понятным и надежным методом **Number.isNaN**,
-который появился в ES2015.
-
-## Number.isNaN
-
-C **Number.isNaN** все намного проще.
-
-Про этот метод, в отличие от **isNaN**, действительно можно сказать, что она
-определяет было ли передано в нее значение `NaN` или нет. Она ожидаемо
-возвращает `true` если в нее передать `NaN` и `false` во всех остальных
-случаях:
+Number.isNaN works as you would expect it to work. It returns `true` only in
+one particular case when you provide it with `NaN` value as argument and
+`false` in all other cases:
 
 ```js
 Number.isNaN(NaN);          // -> true
@@ -124,37 +123,29 @@ Number.isNaN(null);         // -> false
 Number.isNaN(Symbol());     // -> false
 ```
 
-Под капотом **Number.isNaN** сначала проверяет является ли аргумент числом, и
-если нет, возвращает `false`, а если является, то проверяет является ли оно
-`NaN` и соответственно возвращает `true` или `false`.
+Under the hood **Number.isNaN** checks if provided argument is of type
+`number`. If it's not a `number` – it will return `false`. If it is – it will
+check this value for `NaN` and accordingly return `true` or `false`
 
-Поначалу, пока я не разобрался и не копнул поглубже, мне показалось, что метод
-**Number.isNaN** проверяет именно на значение `NaN`, а функция **isNaN**
-проверяет на то, чтобы значение не являлось числом, не типом `number`, а именно
-числом, но я ошибался.
-
-## Проверь себя
+## Test yourself
 
 ```js
-const name = 'Lydia Hallie';
-const age = 21;
+isNaN("string") // -> ?
+isNaN(42) // -> ?
+isNaN(NaN) // -> ?
 
-console.log(Number.isNaN(name));
-console.log(Number.isNaN(age));
-
-console.log(isNaN(name));
-console.log(isNaN(age));
+Number.isNaN("string") // -> ?
+Number.isNaN(42) // -> ?
+Number.isNaN(NaN) // -> ?
 ```
 
 <details>
-  <summary>Ответ</summary>
+  <summary>Answer</summary>
+`true`
+`false`
+`true`
+`false`
+`false`
+`true`
 
-`false`, `false`, `true`, `false`
-
-<!---
-With the Number.isNaN method, you can check if the value you pass is a numeric value and equal to NaN. name is not a numeric value, so Number.isNaN(name) returns false. age is a numeric value, but is not equal to NaN, so Number.isNaN(age) returns false.
-
-With the isNaN method, you can check if the value you pass is not a number. name is not a number, so isNaN(name) returns true. age is a number, so isNaN(age) returns false.
---->
 </details>
-
