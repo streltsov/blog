@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwiki_blog=self.webpackChunkwiki_blog||[]).push([[535],{5641:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"The difference between isNaN and Number.isNaN","permalink":"/isNaN-vs-Number.isNaN"}]}')}}]);

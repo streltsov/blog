@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>Herman Streltsov Blog</title>
+        <link>https://blog.streltsov.dev/</link>
+        <description>Herman Streltsov Blog</description>
+        <lastBuildDate>Wed, 09 Mar 2022 21:02:41 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[The difference between isNaN and Number.isNaN]]></title>
+            <link>https://blog.streltsov.dev/isNaN-vs-Number.isNaN</link>
+            <guid>isNaN-vs-Number.isNaN</guid>
+            <pubDate>Wed, 09 Mar 2022 21:02:41 GMT</pubDate>
+            <description><![CDATA[How to check for NaN value and what is the difference between isNaN and Number.isNaN]]></description>
+            <content:encoded><![CDATA[<p>JavaScript method <strong>Number.isNaN</strong> and its evil twin brother global function
+<strong>isNaN</strong> may confuse you and make you think if they has the same name – then
+they behave the same way.</p><p>But they do not.</p><p>In this article I&#x27;ll try to explain in detail the difference between the twins
+and how to reliably check for <code>NaN</code> value.</p><p>But first, let&#x27;s recall what the hell <code>NaN</code> value is.</p><h2>NaN</h2><p><strong>NaN</strong> — is a two-faced value, which stands for <em>Not-a-Number</em>, but
+paradoxically has a type of <code>number</code>.</p><p>You can get a <code>NaN</code> if you try to do some crazy operation like multiplying
+infinity by zero:</p><pre><code class="language-js">Infinity * 0 // -&gt; NaN
+</code></pre><p>and other useless operatons:</p><pre><code class="language-js">0 / 0                 // -&gt; NaN
+0 * Infinity          // -&gt; NaN
+&quot;JavaScript&quot; - 777    // -&gt; NaN
+undefined + undefined // -&gt; NaN
+</code></pre><p>But also you can get a <code>NaN</code> in some practical case, for example when parsing a
+string with <code>parseInt</code>:</p><pre><code class="language-js">parseInt(&quot;string&quot;); // -&gt; NaN
+</code></pre><p>Here, we would like to know if the operation failed or not. How do we do that?
+Well, if it&#x27;s failed then the result should be <code>NaN</code>, so we check for <code>NaN</code></p><pre><code class="language-js">const maybeNaN = parseInt(&quot;some string&quot;);
+
+if (maybeNaN == NaN) {
+  // Code if parsing failed
+} else {
+  // Code if parsing succeeded
+}
+</code></pre><p>But, thats not gonna work as comparison <code>maybeNaN == NaN</code> always will be false
+because in JavaScript nothing is equal to <code>NaN</code>, even <code>NaN</code> itself.</p><p>So, how do we check for <code>NaN</code>? Let&#x27;s try this global function <code>isNaN</code>.</p><h2>Global Function isNaN</h2><p>Considering the function&#x27;s name we can assume that the function checks for
+<code>NaN</code> value. So, if we pass the <code>NaN</code> value it will return true and if it&#x27;s
+something else we will get <code>false</code>. Let&#x27;s check it out if it&#x27;s true:</p><pre><code class="language-js">isNaN(NaN);          // -&gt; true
+</code></pre><p>Works like a charm with <code>NaN</code>! Let&#x27;s try different values:</p><pre><code class="language-js">isNaN(42); // -&gt; false
+isNaN(0);  // -&gt; false
+</code></pre><p>Seems to be working too!</p><p>But all JS quirks begins when we pass to the function some value with type
+other than <code>number</code>. Let&#x27;s see:</p><pre><code class="language-js">isNaN(undefined);    // -&gt; true
+isNaN(&quot;JavaScript&quot;); // -&gt; true
+isNaN({a: 1});       // -&gt; true
+isNaN([]);           // -&gt; true
+</code></pre><p>So, what the heck is going on here?</p><p>According to <a href="https://tc39.es/ecma262/#sec-isnan-number">specification</a> the
+first thing that function <code>isNaN</code> does, is implicitly converts passed argument
+to type <code>number</code>. And only after converting checks if it is a <code>NaN</code></p><p>You can see it if you&#x27;ll pass to <code>isNaN</code> a value with type <code>symbol</code> or
+<code>bigint</code>. JavaScript wont be able to convert these types to <code>number</code>:</p><p><img src="/img/isNaN-vs-Number-isNaN/type-error.jpg" alt="TypeError при передаче в функцию isNaN типов symbol и bigint"/></p><p>To sum up, if you want to check for <code>NaN</code> value with <code>isNaN</code> function, you
+should feed it only with values of type <code>number</code>. Or you can use a much more
+reliable method <code>Number.isNaN</code>.</p><h2>Number.isNaN method</h2><p>Number.isNaN works as you would expect it to work. It returns <code>true</code> only in
+one particular case when you provide it with <code>NaN</code> value as argument and
+<code>false</code> in all other cases:</p><pre><code class="language-js">Number.isNaN(NaN);          // -&gt; true
+
+Number.isNaN(42);           // -&gt; false
+Number.isNaN(BigInt(42));   // -&gt; false
+Number.isNaN(&quot;JavaScript&quot;); // -&gt; false
+Number.isNaN([1, 2, 3]);    // -&gt; false
+Number.isNaN(undefined);    // -&gt; false
+Number.isNaN(null);         // -&gt; false
+Number.isNaN(Symbol());     // -&gt; false
+</code></pre><p>Under the hood <strong>Number.isNaN</strong> checks if provided argument is of type
+<code>number</code>. If it&#x27;s not a <code>number</code> – it will return <code>false</code>. If it is – it will
+check this value for <code>NaN</code> and accordingly return <code>true</code> or <code>false</code></p><h2>Test yourself</h2><pre><code class="language-js">isNaN(&quot;string&quot;) // -&gt; ?
+isNaN(42) // -&gt; ?
+isNaN(NaN) // -&gt; ?
+
+Number.isNaN(&quot;string&quot;) // -&gt; ?
+Number.isNaN(42) // -&gt; ?
+Number.isNaN(NaN) // -&gt; ?
+</code></pre><details><summary>Answer</summary> `true` `false` `true` `false` `false` `true`</details>]]></content:encoded>
+        </item>
+    </channel>
+</rss>

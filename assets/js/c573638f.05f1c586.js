@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwiki_blog=self.webpackChunkwiki_blog||[]).push([[964],{8866:function(a){a.exports=JSON.parse('{"/tags/java-script":{"allTagsPath":"/tags","slug":"/tags/java-script","name":"JavaScript","count":1,"permalink":"/tags/java-script"},"/tags/wtfjs":{"allTagsPath":"/tags","slug":"/tags/wtfjs","name":"wtfjs","count":1,"permalink":"/tags/wtfjs"}}')}}]);
