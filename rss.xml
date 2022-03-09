@@ -4,14 +4,14 @@
         <title>Herman Streltsov Blog</title>
         <link>https://blog.streltsov.dev/</link>
         <description>Herman Streltsov Blog</description>
-        <lastBuildDate>Wed, 09 Mar 2022 21:02:41 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 10 Mar 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
             <title><![CDATA[The difference between isNaN and Number.isNaN]]></title>
             <link>https://blog.streltsov.dev/isNaN-vs-Number.isNaN</link>
             <guid>isNaN-vs-Number.isNaN</guid>
-            <pubDate>Wed, 09 Mar 2022 21:02:41 GMT</pubDate>
+            <pubDate>Thu, 10 Mar 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[How to check for NaN value and what is the difference between isNaN and Number.isNaN]]></description>
             <content:encoded><![CDATA[<p>JavaScript method <strong>Number.isNaN</strong> and its evil twin brother global function
 <strong>isNaN</strong> may confuse you and make you think if they has the same name – then
