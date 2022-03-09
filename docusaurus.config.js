@@ -17,8 +17,8 @@ module.exports = {
   projectName: 'blog',
   baseUrlIssueBanner: true,
   i18n: {
-    defaultLocale: 'ru',
-    locales: ['ru'],
+    defaultLocale: 'en',
+    locales: ['en'],
   },
   presets: [
     [
